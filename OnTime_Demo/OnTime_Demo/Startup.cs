@@ -1,5 +1,4 @@
 ﻿using Npgsql;
-using OnTime_Demo.Api;
 using OnTime_Demo.IServices;
 using OnTime_Demo.Services;
 using System.Data;
@@ -30,8 +29,10 @@ namespace OnTime_Demo
             services.AddTransient<IDbConnection>(s => new NpgsqlConnection(connectionString));
             services.AddControllers();
             services.AddSwaggerGen();
+            services.AddHttpClient();
             services.AddHttpClient<IJiraHttpClient, JiraHttpClient>();
-            services.AddTransient<IProjectApi, ProjectApi>();
+            services.AddScoped<IProject, Project>();
+            
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
