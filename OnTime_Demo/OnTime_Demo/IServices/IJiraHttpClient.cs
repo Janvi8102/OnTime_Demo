@@ -2,6 +2,6 @@
 {
     public interface IJiraHttpClient
     {
-        Task<HttpResponseMessage> getAsync(string url);
+        Task<HttpResponseMessage> getAsync(string url, string authToken);
     }
 }

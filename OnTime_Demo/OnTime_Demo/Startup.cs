@@ -1,5 +1,8 @@
 ﻿using Npgsql;
+using OnTime_Demo.API;
+using OnTime_Demo.IRepository;
 using OnTime_Demo.IServices;
+using OnTime_Demo.Repository;
 using OnTime_Demo.Services;
 using System.Data;
 
@@ -31,7 +34,10 @@ namespace OnTime_Demo
             services.AddSwaggerGen();
             services.AddHttpClient();
             services.AddHttpClient<IJiraHttpClient, JiraHttpClient>();
-            services.AddScoped<IProject, Project>();
+            services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IProjectApi, ProjectApi>();
             
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
