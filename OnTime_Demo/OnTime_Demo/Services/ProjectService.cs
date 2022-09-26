@@ -36,5 +36,97 @@ namespace OnTime_Demo.Services
             }
             return myProject;
         }
+
+        public async Task<CommentOutput> AddComment(string IssueKey, CommentInput content, JiraTokenModel jiramodel)
+        {
+            var response = new CommentOutput();
+            CommentOutput addComment = await _projectApi.AddComment(IssueKey, content, jiraCommonInput);
+            if (addComment == null)
+            {
+                JiraTokenModel jiratokens = await _userServices.RefreshingJiraToken(jiramodel);
+                if (!string.IsNullOrEmpty(jiratokens.JiraAuthToken))
+                {
+                    setAuthorizationToken("Bearer " + jiratokens.JiraAuthToken);
+                }
+                addComment = await _projectApi.AddComment(IssueKey,content, jiraCommonInput);
+            }
+            return addComment;
+        }
+
+        public async Task<IssueOutput> GetIsssue(string IssueKey, JiraTokenModel jiramodel)
+        {
+            IssueOutput myProject = await _projectApi.GetIssue( IssueKey,jiramodel, jiraCommonInput);
+            if (myProject == null)
+            {
+                JiraTokenModel jiratokens = await _userServices.RefreshingJiraToken(jiramodel);
+                if (!string.IsNullOrEmpty(jiratokens.JiraAuthToken))
+                {
+                    setAuthorizationToken("Bearer " + jiratokens.JiraAuthToken);
+                }
+                myProject = await _projectApi.GetIssue(IssueKey, jiramodel, jiraCommonInput);
+            }
+            return myProject;
+        }
+
+        public async Task<AllIssue> GetAllIsssue(string ProjectKey, JiraTokenModel jiramodel)
+        {
+            AllIssue myProject = await _projectApi.GetAllIssue(ProjectKey, jiramodel, jiraCommonInput);
+            if (myProject == null)
+            {
+                JiraTokenModel jiratokens = await _userServices.RefreshingJiraToken(jiramodel);
+                if (!string.IsNullOrEmpty(jiratokens.JiraAuthToken))
+                {
+                    setAuthorizationToken("Bearer " + jiratokens.JiraAuthToken);
+                }
+                myProject = await _projectApi.GetAllIssue(ProjectKey, jiramodel, jiraCommonInput);
+            }
+            return myProject;
+        }
+
+        public async Task<MyIssueOutput> GetMyIsssue(string AccountId, JiraTokenModel jiramodel)
+        {
+            MyIssueOutput myProject = await _projectApi.GetMyIssue(AccountId, jiramodel, jiraCommonInput);
+            if (myProject == null)
+            {
+                JiraTokenModel jiratokens = await _userServices.RefreshingJiraToken(jiramodel);
+                if (!string.IsNullOrEmpty(jiratokens.JiraAuthToken))
+                {
+                    setAuthorizationToken("Bearer " + jiratokens.JiraAuthToken);
+                }
+                myProject = await _projectApi.GetMyIssue(AccountId, jiramodel, jiraCommonInput);
+            }
+            return myProject;
+        }
+
+        public async Task<MyIssueOutput> GetMyProjectIsssue(string ProjectKey, string AccountId, JiraTokenModel jiramodel)
+        {
+            MyIssueOutput myProject = await _projectApi.GetMyProjectIssue(ProjectKey, AccountId, jiramodel, jiraCommonInput);
+            if (myProject == null)
+            {
+                JiraTokenModel jiratokens = await _userServices.RefreshingJiraToken(jiramodel);
+                if (!string.IsNullOrEmpty(jiratokens.JiraAuthToken))
+                {
+                    setAuthorizationToken("Bearer " + jiratokens.JiraAuthToken);
+                }
+                myProject = await _projectApi.GetMyProjectIssue(ProjectKey, AccountId, jiramodel, jiraCommonInput);
+            }
+            return myProject;
+        }
+
+        public async Task<WorkLogOutput> AddWorkLog(string IssueKey, WorkLogInput content, JiraTokenModel jiramodel)
+        {
+            var response = new WorkLogOutput();
+            WorkLogOutput addComment = await _projectApi.AddWorkLog(IssueKey, content, jiraCommonInput);
+            if (addComment == null)
+            {
+                JiraTokenModel jiratokens = await _userServices.RefreshingJiraToken(jiramodel);
+                if (!string.IsNullOrEmpty(jiratokens.JiraAuthToken))
+                {
+                    setAuthorizationToken("Bearer " + jiratokens.JiraAuthToken);
+                }
+                addComment = await _projectApi.AddWorkLog(IssueKey, content, jiraCommonInput);
+            }
+            return addComment;
+        }
     }
 }

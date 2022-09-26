@@ -8,6 +8,7 @@
         public JiraCommonInput(string authToken)
         {
             AuthToken = authToken;
-        }  
+
+        }
     }
 }

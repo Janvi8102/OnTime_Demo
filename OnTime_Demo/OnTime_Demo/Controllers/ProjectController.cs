@@ -15,34 +15,90 @@ namespace OnTime_Demo.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
-        private readonly IDbConnection _connection;
         private readonly IProjectService _project;
         private readonly IUserServices _userServices;
 
-        public ProjectController(IDbConnection connection, IProjectService project, IUserServices userServices)
+        public ProjectController(IProjectService project, IUserServices userServices)
         {
-            _connection = connection;
             _project = project;
             _userServices = userServices;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            string query = @"select * FROM ""User""";
-            var taskTimeSheetRecords = await _connection.QueryAsync<JiraTokenModel>(query);
-            return Ok(taskTimeSheetRecords);
-        }
-
-        [HttpGet]
-        [Route("MyProject")]
+        [Route("GetAllProject")]
         public async Task<IActionResult> MyProject([FromHeader] string UserId)
-        {
+         {
             JiraTokenModel jiramodel = _userServices.GetJiraTokens(Convert.ToInt32(UserId));
             _project.setAuthorizationToken(jiramodel.JiraAuthToken);
             List<ProjectOutput> result = new List<ProjectOutput>();
             result = await _project.MyProject(jiramodel);
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("AddComment")]
+        public async Task<IActionResult> AddComment([FromHeader] string UserId, [FromQuery] string IssueKey, [FromBody] CommentInput content)
+        {
+            JiraTokenModel jiramodel = _userServices.GetJiraTokens(Convert.ToInt32(UserId));
+            _project.setAuthorizationToken(jiramodel.JiraAuthToken);
+            var response = new CommentOutput();
+            response = await _project.AddComment(IssueKey, content, jiramodel);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("GetIssue")]
+        public async Task<IActionResult> GetIssue([FromHeader] string UserId, [FromQuery] string IssueKey)
+        {
+            JiraTokenModel jiramodel = _userServices.GetJiraTokens(Convert.ToInt32(UserId));
+            _project.setAuthorizationToken(jiramodel.JiraAuthToken);
+            IssueOutput result = new IssueOutput();
+            result = await _project.GetIsssue(IssueKey,jiramodel);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("GetProjectIssues")]
+        public async Task<IActionResult> GetAllIssue([FromHeader] string UserId, [FromQuery] string ProjectKey)
+        {
+            JiraTokenModel jiramodel = _userServices.GetJiraTokens(Convert.ToInt32(UserId));
+            _project.setAuthorizationToken(jiramodel.JiraAuthToken);
+            AllIssue result = new AllIssue();
+            result = await _project.GetAllIsssue(ProjectKey, jiramodel);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("GetMyIssue")]
+        public async Task<IActionResult> GetMyIssue([FromHeader] string UserId, [FromQuery] string AccountId)
+        {
+            JiraTokenModel jiramodel = _userServices.GetJiraTokens(Convert.ToInt32(UserId));
+            _project.setAuthorizationToken(jiramodel.JiraAuthToken);
+            MyIssueOutput result = new MyIssueOutput();
+            result = await _project.GetMyIsssue(AccountId,jiramodel);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("GetMyProjectIssue")]
+        public async Task<IActionResult> GetMyProjectIssue([FromHeader] string UserId, [FromQuery] string ProjectKey, [FromQuery] string AccountId)
+        {
+            JiraTokenModel jiramodel = _userServices.GetJiraTokens(Convert.ToInt32(UserId));
+            _project.setAuthorizationToken(jiramodel.JiraAuthToken);
+            MyIssueOutput result = new MyIssueOutput();
+            result = await _project.GetMyProjectIsssue(ProjectKey,AccountId,jiramodel);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("AddWorkLog")]
+        public async Task<IActionResult> AddWorkLog([FromHeader] string UserId, [FromBody] WorkLogInput content, [FromQuery] string IssueKey)
+        {
+            JiraTokenModel jiramodel = _userServices.GetJiraTokens(Convert.ToInt32(UserId));
+            _project.setAuthorizationToken(jiramodel.JiraAuthToken);
+            var response = new WorkLogOutput();
+            response = await _project.AddWorkLog(IssueKey,content, jiramodel);
+            return Ok(response);
         }
     }
 }

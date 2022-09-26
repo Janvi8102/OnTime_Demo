@@ -7,5 +7,6 @@ namespace OnTime_Demo.IRepository
         List<ConfigurationInfoModel> GetConfigurationInfo();
         JiraTokenModel GetJiraToken(int userId);
         Task<bool> UpdateJiraTokens(JiraTokenModel jiramodel);
+        JiraRefreshToken GetJiraRefreshToken();
     }
 }

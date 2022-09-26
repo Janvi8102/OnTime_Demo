@@ -19,20 +19,31 @@ namespace OnTime_Demo.Repository
         }
         public List<ConfigurationInfoModel> GetConfigurationInfo()
         {
+            string query = @"SELECT * From ""ConfigurationInfo""";
             using (IDbConnection dbConnection = new NpgsqlConnection(connectionString))
             {
-                List<ConfigurationInfoModel> configurationInformation = dbConnection.Query<ConfigurationInfoModel>("SELECT * FROM Public.\"ConfigurationInfo\"").ToList();
+                List<ConfigurationInfoModel> configurationInformation = dbConnection.Query<ConfigurationInfoModel>(query).ToList();
+                return configurationInformation;
+            }
+        }
+
+        public JiraRefreshToken GetJiraRefreshToken()
+        {
+            string query = @"SELECT ""JiraRefreshToken"" As ""refresh_token"" from ""User""";
+            using (IDbConnection dbConnection = new NpgsqlConnection(connectionString))
+            {
+                JiraRefreshToken configurationInformation = dbConnection.Query<JiraRefreshToken>(query).FirstOrDefault();
                 return configurationInformation;
             }
         }
 
         public JiraTokenModel GetJiraToken(int userId)
         {
-            string query = @"select * FROM ""User""";
+            string query = @"select * FROM ""User"" where ""UserId""= @UserId ";
 
             using (IDbConnection dbConnection = new NpgsqlConnection(connectionString))
             {
-                JiraTokenModel jiraTokens = dbConnection.Query<JiraTokenModel>(query).FirstOrDefault();
+                JiraTokenModel jiraTokens = dbConnection.Query<JiraTokenModel>(query, new { UserId = userId}).FirstOrDefault();
                 jiraTokens.JiraAuthToken = "Bearer " + jiraTokens.JiraAuthToken;
                 return jiraTokens;
             }
@@ -41,7 +52,7 @@ namespace OnTime_Demo.Repository
         public async Task<bool> UpdateJiraTokens(JiraTokenModel jiramodel)
         {
             string sql = @" UPDATE ""User"" SET ""JiraAuthToken"" = @JiraAuthToken , ""JiraRefreshToken"" = @JiraRefreshToken
-                where ""UserId""= 2 ";
+                where ""UserId""= @userId ";
 
             using (IDbConnection dbConnection = new NpgsqlConnection(connectionString))
             {
