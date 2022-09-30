@@ -25,7 +25,7 @@ namespace OnTime_Demo.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllProject")]
+        [Route("GetAllProjects")]
         public async Task<IActionResult> MyProject([FromHeader] string UserId)
          {
             JiraTokenModel jiramodel = _userServices.GetJiraTokens(Convert.ToInt32(UserId));
